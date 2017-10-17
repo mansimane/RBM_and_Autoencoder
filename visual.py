@@ -4,7 +4,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-def visualize (w1) :
+import time
+def visualize (w1, hyper_para) :
+    date = time.strftime("%Y-%m-%d_%H_%M")
+
     if w1.shape[0] == 784:
         nrow = 10
         ncol = 10
@@ -25,7 +28,11 @@ def visualize (w1) :
                 ax.set_yticklabels([])
                 cnt = cnt + 1
         #plt.title('Weights at layer 1')
+        plt.suptitle('Para:' + '\tBatch_size=' + str(hyper_para['batch_size']) + '\tlearning_rate=' + str(
+            hyper_para['learning_rate']) + '\tk=' + str(hyper_para['k']))
+        plt.savefig('./figures/Q5_a_weights' + date + '.png')
         plt.show()
+
     else:
         nrow = 5
         ncol = 2

@@ -71,4 +71,4 @@ for epoch in range(epochs):
 
 
 plot_ce_train_valid(train_ce, valid_ce, hyper_para)
-visualize(param['w'])
+visualize(param['w'],hyper_para)

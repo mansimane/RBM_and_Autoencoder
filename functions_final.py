@@ -53,7 +53,6 @@ def update_param (param, x_p, xtrain, hyper_para):
 
     n = np.shape(xtrain)[0]
 
-
     w_grad = np.sum((x.T).dot(h) - (x_neg.T).dot(h_neg), axis = 0) #**divide by n?
     w_grad = w_grad/n
     param['w'] = param['w'] + (lr * w_grad)
@@ -89,7 +88,7 @@ def loss_calc(param, xtrain, ytrain, hyper_para):
 
     h_p, h_bin = h_calc(param, xtrain, hyper_para)
     x_p, x_bin = x_calc(param, hyper_para, h_p)
-
+    #xtrain = xtrain > 0.5
     loss = (xtrain * np.log(x_p)) + ((1 - xtrain) * np.log(1 - x_p))
     loss = -loss
     loss = np.sum(loss, axis=0)    #sum across all rows, examples
