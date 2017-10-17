@@ -12,5 +12,6 @@ def plot_ce_train_valid (train_ce, valid_ce, hyper_para):
     plt.legend(['Train Cross Entropy', 'Valid Cross Entropy'], loc='upper right')
     plt.show()
     plt.savefig('./figures/Q5_a' + date + '.png')
+    plt.close()
 
 

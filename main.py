@@ -8,7 +8,6 @@ import random
 from plots_final import *
 import time
 
-
 # Load Training Data
 xtrain, ytrain, xvalidate, yvalidate, xtest, ytest = load_mnist()
 no_of_train_samples = len(ytrain)
@@ -31,11 +30,12 @@ c = np.random.normal(mu, sigma, (1, input_layer_size))
 param = {'w': w, 'b': b, 'c': c}
 
 no_of_train_samples = len(ytrain)
-h = np.zeros(1,hyper_para['hidden_layer_1_size'])
+h = np.zeros((1, hyper_para['hidden_layer_1_size']))
+h.astype(float)
 
 # Variables Storing Results
-J_train = 0
-J_valid = 0
+J_train = 0.0
+J_valid = 0.0
 train_ce = []   #Cross Entropy = CE
 valid_ce = []
 

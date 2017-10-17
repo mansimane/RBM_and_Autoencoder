@@ -89,7 +89,7 @@ def loss_calc(param, xtrain, ytrain, hyper_para):
 
     loss = (xtrain * np.log(x_p)) + ((1 - xtrain) * np.log(1 - x_p))
     loss = -loss
-    loss = np.sum(loss, axis=0 )    #sum across all rows, examples
+    loss = np.sum(loss, axis=0)    #sum across all rows, examples
     loss = np.sum(loss, axis=0)     #sum across all cols, pixel values
-
+    loss = loss / xtrain.shape[0]
     return loss
