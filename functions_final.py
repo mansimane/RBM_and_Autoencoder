@@ -55,12 +55,15 @@ def update_param (param, x_p, xtrain, hyper_para):
 
 
     w_grad = np.sum((x.T).dot(h) - (x_neg.T).dot(h_neg), axis = 0) #**divide by n?
+    w_grad = w_grad/n
     param['w'] = param['w'] + (lr * w_grad)
 
     b_grad = np.sum(h - h_neg, axis = 0)
+    b_grad = b_grad/n
     param['b'] = param['b'] + (lr * (b_grad))
 
     c_grad = np.sum(x - x_neg, axis=0)
+    c_grad = c_grad/n
     param['c'] = param['c'] + (lr * c_grad)
 
         #param_winc_loc[i][0] = mu*param_winc[i][0] + w_rate*param_grad[i][0]
