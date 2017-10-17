@@ -3,10 +3,10 @@
 
 # Traning Parameters
 hyper_para = {}
-hyper_para['batch_size'] = 1
-hyper_para['epochs'] = 90
+hyper_para['batch_size'] = 32
+hyper_para['epochs'] = 200
 
-hyper_para['learning_rate'] = 0.0001        #Learning rate for w
+hyper_para['learning_rate'] = 0.001        #Learning rate for w
 
 hyper_para['mu'] = 0.5            #Momentum
 hyper_para['decay'] = 0.0005      #weight decay

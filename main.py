@@ -6,6 +6,7 @@ from config import *
 import matplotlib.pyplot as plt
 import random
 from plots_final import *
+from visual import *
 import time
 
 # Load Training Data
@@ -70,3 +71,4 @@ for epoch in range(epochs):
 
 
 plot_ce_train_valid(train_ce, valid_ce, hyper_para)
+visualize(param['w'])
