@@ -10,17 +10,19 @@ def h_calc(param, x_bin, hyper_para):
     #x  nx784
     n = np.shape(x_bin)[0]
     no_of_hidden_units = hyper_para['hidden_layer_1_size']
-    w = param['w']              #784*100
+    w = param['w']                       #w =               #784*100
     h = x_bin.dot(w) + param['b']   #nx100 = nx784 * 784*100
     h_p = sigmoid_forward(h)    #*** what to update and return param or h ?
     h_bin = h_p > np.random.rand(n, no_of_hidden_units)
 
     return h_p,h_bin      #row col check?
 
-def x_calc(param, hyper_para, h_bin):
-    t = param['c'] + h_bin.dot(param['w'].T)    #1x784 = 1x784 + (1x100 * 100x784)
+def x_calc(param, h_bin, hyper_para):
+    w = param['w']
+    t = param['c'] + h_bin.dot(w.T)    #1x784 = 1x784 + (1x100 * 100x784)
     x_p = sigmoid_forward(t)
-    x_bin = x_p
+    x_bin = x_p > np.random.rand(x_p.shape[0], x_p.shape[1])  #*** wrong
+
     return x_p, x_bin
 
 def gibbs_step(param, xtrain, hyper_para):
@@ -29,15 +31,13 @@ def gibbs_step(param, xtrain, hyper_para):
     x_bin = x_p
     for i in range(k):
         h_p, h_bin = h_calc(param, x_bin, hyper_para)   #what h or parm should be collected??
-        x_p, x_bin = x_calc(param, hyper_para, h_bin)   #
+        x_p, x_bin = x_calc(param, h_bin, hyper_para)   #
 
     return x_p, h_p
 
 def update_param (param, x_p, xtrain, hyper_para):
     """Update the parameters with sgd with momentum
-
   Args:
-
   Returns:
 
     """
@@ -53,7 +53,7 @@ def update_param (param, x_p, xtrain, hyper_para):
 
     n = np.shape(xtrain)[0]
 
-    w_grad = np.sum((x.T).dot(h) - (x_neg.T).dot(h_neg), axis = 0) #**divide by n?
+    w_grad = (x.T).dot(h) - (x_neg.T).dot(h_neg) #**divide by n?
     w_grad = w_grad/n
     param['w'] = param['w'] + (lr * w_grad)
 
@@ -64,7 +64,6 @@ def update_param (param, x_p, xtrain, hyper_para):
     c_grad = np.sum(x - x_neg, axis=0)
     c_grad = c_grad/n
     param['c'] = param['c'] + (lr * c_grad)
-
         #param_winc_loc[i][0] = mu*param_winc[i][0] + w_rate*param_grad[i][0]
         #param_winc_loc[i][1] = mu*param_winc[i][1] + b_rate*param_grad[i][1]
 
@@ -87,11 +86,12 @@ def update_param (param, x_p, xtrain, hyper_para):
 def loss_calc(param, xtrain, ytrain, hyper_para):
 
     h_p, h_bin = h_calc(param, xtrain, hyper_para)
-    x_p, x_bin = x_calc(param, hyper_para, h_p)
+    x_p, x_bin = x_calc(param, h_p, hyper_para)
     #xtrain = xtrain > 0.5
     loss = (xtrain * np.log(x_p)) + ((1 - xtrain) * np.log(1 - x_p))
     loss = -loss
     loss = np.sum(loss, axis=0)    #sum across all rows, examples
     loss = np.sum(loss, axis=0)     #sum across all cols, pixel values
     loss = loss / xtrain.shape[0]
+
     return loss
