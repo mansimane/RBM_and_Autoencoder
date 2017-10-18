@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import copy
+import pickle
 
 def sigmoid_forward (z):
     g = 1.0/(1.0 + np.exp(-z))
@@ -93,5 +94,12 @@ def loss_calc(param, xtrain, ytrain, hyper_para):
     loss = np.sum(loss, axis=0)    #sum across all rows, examples
     loss = np.sum(loss, axis=0)     #sum across all cols, pixel values
     loss = loss / xtrain.shape[0]
-
     return loss
+
+def save_obj(obj, name, epoch ):
+    with open('obj/'+ name + epoch +'.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(name,epoch ):
+    with open('obj/' + name + epoch + '.pkl', 'rb') as f:
+        return pickle.load(f)

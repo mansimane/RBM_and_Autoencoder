@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import random
 from plots_final import *
 from visual import *
+
 import time
 
 # Load Training Data
@@ -69,6 +70,9 @@ for epoch in range(epochs):
     train_ce.append(J_train)
     valid_ce.append(J_valid)
 
+    if (epoch > 100) & (epoch % 50 ==0):
+        save_obj(param, 'param', str(epoch))
 
 plot_ce_train_valid(train_ce, valid_ce, hyper_para)
 visualize(param['w'],hyper_para)
+
