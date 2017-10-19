@@ -29,7 +29,7 @@ def visualize (w1, hyper_para) :
                 cnt = cnt + 1
         #plt.title('Weights at layer 1')
         plt.suptitle('Para:' + '\tBatch_size=' + str(hyper_para['batch_size']) + '\tlearning_rate=' + str(
-            hyper_para['learning_rate']) + '\tk=' + str(hyper_para['k']))
+            hyper_para['learning_rate']) + '\tk=' + str(hyper_para['k']) + 'epoch_' + hyper_para['epochs'])
         plt.savefig('./figures/Q5_a_weights' + date + '.png')
         plt.show()
 
