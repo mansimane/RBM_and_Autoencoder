@@ -13,7 +13,7 @@ param = load_obj('param', str(epoch))
 
 
 # override number of steps in CD with 100
-hyper_para['k'] = 100
+hyper_para['k'] = 1000
 no_of_gibbs_chains = 100
 
 x = np.random.normal(mu, sigma, (no_of_gibbs_chains * input_layer_size))
