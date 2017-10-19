@@ -1,3 +1,6 @@
+'''
+Main file for autoencoder
+'''
 from load_mnist import *
 from functions_ae import *
 from config_ae import *
@@ -39,7 +42,7 @@ for epoch in range(epochs):
             random.shuffle(indices)
             continue
         idx = indices[start_idx: end_idx]
-        param_grad = grad_calc(param, xtrain[idx, :])
+        param_grad = grad_calc(param, xtrain[idx, :], hyper_para)
         param = update_param(param, param_grad, hyper_para)
 
     J_train = loss_calc(param, xtrain, ytrain, hyper_para)
