@@ -1,6 +1,7 @@
 from small_functions_final import *
 import math
 import copy
+import pickle
 
 def grad_calc(param, x, y):
     #x
@@ -267,3 +268,7 @@ def grad_calc_2layer_batch_norm_relu (param, x, y, eps,hyper_para):
     #print "beta1_grad", beta1_grad
 
     return param_grad
+
+def load_obj(name,epoch ):
+    with open('../obj/' + name + epoch + '.pkl', 'rb') as f:
+        return pickle.load(f)

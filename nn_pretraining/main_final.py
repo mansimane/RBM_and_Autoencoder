@@ -118,7 +118,7 @@ from load_mnist import *
 from functions_final import *
 import matplotlib.pyplot as plt
 import random
-from plots_final import *
+from plots_final_nn import *
 from visual import *
 import time
 
@@ -127,7 +127,6 @@ input_layer_size  = 784  # 28x28 Input Images of Digits
 hidden_layer_size = 100   # 100 hidden units
 num_labels = 10          # 10 labels, from 1 to 10
                           # (note that we have mapped "0" to label 10)
-
 # Traning Parameters
 hyper_para = {}
 hyper_para['batch_size'] = 16
@@ -142,6 +141,14 @@ hyper_para['no_of_h_layer'] = 1
 hyper_para['wt_intial_mean'] = 0
 hyper_para['wt_intial_sigma'] = 0.1
 
+hyper_para['pretrain'] = 1
+
+#hyper_para['pretrain_type'] = 'rbm'
+#hyper_para['pretrain_type'] = 'ae'
+hyper_para['pretrain_type'] = 'dae'
+
+hyper_para['pretrain_epoch'] = 250
+pretrain = hyper_para['pretrain']
 
 # Load Training Data
 xtrain, ytrain, xvalidate, yvalidate, xtest, ytest = load_mnist()
@@ -156,13 +163,30 @@ random_seed = hyper_para['random_seed']
 
 np.random.seed(random_seed)
 
-w1 = np.random.normal(mu, sigma, (input_layer_size * hidden_layer_size))
-w1 = w1.reshape(input_layer_size, hidden_layer_size)
+if pretrain == 0:
+    w1 = np.random.normal(mu, sigma, (input_layer_size * hidden_layer_size))
+    w1 = w1.reshape(input_layer_size, hidden_layer_size)
+    b1 = np.zeros((1, hidden_layer_size))
+else:
+    if hyper_para['pretrain_type'] == 'ae':
+        print 'Auto Encoder'
+        param_pre = load_obj('param_ae', str(hyper_para['pretrain_epoch']))
+        w1 = param_pre['w1']
+        b1 = param_pre['b1']
+    if hyper_para['pretrain_type'] == 'dae':
+        print 'Denoise Auto Encoder'
+        param_pre = load_obj('param_dae', str(hyper_para['pretrain_epoch']))
+        w1 = param_pre['w1']
+        b1 = param_pre['b1']
+
+    else:
+        param_pre = load_obj('param', str(hyper_para['pretrain_epoch']))
+        print 'RBM'
+        w1 = param_pre['w']
+        b1 = param_pre['b']
 
 w2 = np.random.normal(mu, sigma, (hidden_layer_size * num_labels))
 w2 = w2.reshape(hidden_layer_size,num_labels)
-
-b1 = np.zeros((1, hidden_layer_size))
 b2 = np.zeros((1, num_labels))
 
 param = [[w1,b1], [w2,b2]]
@@ -210,6 +234,7 @@ for epoch in range(epochs):
     [train_error, J_train] = calc_accuracy(param, xtrain, ytrain)
     [valid_error, J_valid] = calc_accuracy(param, xvalidate, yvalidate)
     [test_error, J_test] = calc_accuracy(param, xtest, ytest)
+
     print 'Current time', time.clock(), 'epoch', epoch, '\tTrain CE', J_train, '\tPA', ((1-train_error)*100), '\t\tValid CE', J_valid, '\tPA', ((1 - valid_error)*100), '\tTest PA', ((1-test_error)*100), '\t\ttest CE', J_test
     train_ce.append(J_train)
     valid_ce.append(J_valid)
@@ -222,6 +247,5 @@ print "time taken\t", end_time - start_time
 w1 = param[0][0]
 w2 = param[1][0]
 plot_ce_train_valid(train_ce, valid_ce, hyper_para)
-#plot_ce_mce_train_valid(train_ce, valid_ce, train_mce, valid_mce, hyper_para)
 visualize(w1)
 visualize(w2)

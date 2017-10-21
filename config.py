@@ -3,16 +3,16 @@
 
 # Traning Parameters
 hyper_para = {}
-hyper_para['batch_size'] = 32
-hyper_para['epochs'] = 4
+hyper_para['batch_size'] = 10
+hyper_para['epochs'] = 401
 
-hyper_para['learning_rate'] = 0.01        #Learning rate for w
+hyper_para['learning_rate'] = 0.001        #Learning rate for w
 
 hyper_para['mu'] = 0.5            #Momentum
 hyper_para['decay'] = 0.0005      #weight decay
 hyper_para['random_seed'] = 0
 hyper_para['eps'] = 0.001
-hyper_para['k'] = 1     #Gibbs sampling steps
+hyper_para['k'] = 10     #Gibbs sampling steps
 
 #Unroll parameters and randomly initialize them
 hyper_para['w_init_mu'] = 0

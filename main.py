@@ -70,9 +70,15 @@ for epoch in range(epochs):
     train_ce.append(J_train)
     valid_ce.append(J_valid)
 
-    if (epoch > 100) & (epoch % 50 ==0):
+    if (epoch > 49) & (epoch % 50 ==0):
         save_obj(param, 'param', str(epoch))
+        visualize(param['w'], hyper_para, epoch, 0)
+
+    if ( epoch > 40):
+        if ( abs(J_valid -J_train) < 2.2):
+            save_obj(param, 'param', str(epoch))
+            visualize(param['w'], hyper_para, epoch, 0)
 
 plot_ce_train_valid(train_ce, valid_ce, hyper_para)
-visualize(param['w'],hyper_para)
+visualize(param['w'],hyper_para, epoch, 1)
 

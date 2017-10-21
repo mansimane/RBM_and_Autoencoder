@@ -170,7 +170,10 @@ def plot_ce_train_valid (train_ce, valid_ce, hyper_para):
     plt.xlabel('Epochs')
     plt.ylabel('Cross Entropy Error')
     plt.legend(['Train Cross Entropy', 'Valid Cross Entropy'], loc='upper right')
-    plt.savefig('./figures/Q5_e' + date + '.png')
+    if hyper_para['drop_out'] == 0.0:
+        plt.savefig('./figures/Q5_e_error' + date + '.png')
+    else:
+        plt.savefig('./figures/Q5_f_error' + date + '.png')
     plt.show()
 
 def visualize (w1, hyper_para, show_flag, epoch) :
@@ -204,7 +207,11 @@ def visualize (w1, hyper_para, show_flag, epoch) :
             d = '\tepochs: ' + str(epoch)
         e = '\tDrop_out: ' + str(int(100 * hyper_para['drop_out']))
         plt.suptitle(a + b + c + d + e)
-        plt.savefig('./figures/Q5_e_weights' + date + '.png')
+        if hyper_para['drop_out'] == 0.0:
+            plt.savefig('./figures/Q5_e_weights' + date + '.png')
+        else:
+            plt.savefig('./figures/Q5_f_weights' + date + '.png')
+
         if show_flag == 1:
             plt.show()
 

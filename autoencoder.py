@@ -6,8 +6,6 @@ from functions_ae import *
 from config_ae import *
 import matplotlib.pyplot as plt
 import random
-#from plots_final import *
-#from visual import *
 
 
 # Load Training Data
@@ -53,10 +51,14 @@ for epoch in range(epochs):
     train_ce.append(J_train)
     valid_ce.append(J_valid)
     #save parameters
-    if (epoch > 100) & (epoch % 50 ==0):
-        save_obj(param, 'param_ae', str(epoch))
-        visualize(param['w1'], hyper_para,0, epoch ),
-
+    if (epoch > 100) and (epoch % 50 ==0):
+        if hyper_para['drop_out'] == 0:
+            save_obj(param, 'param_ae', str(epoch))
+            visualize(param['w1'], hyper_para,0, epoch )
+        else:
+            save_obj(param, 'param_dae', str(epoch))
+            visualize(param['w1'], hyper_para, 0, epoch)
+save_obj(param, 'param_dae', str(epoch))
 
 plot_ce_train_valid(train_ce, valid_ce, hyper_para)
 visualize(param['w1'], hyper_para,1, 2)
