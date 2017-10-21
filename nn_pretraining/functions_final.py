@@ -49,8 +49,8 @@ def update_param (param, param_grad, param_winc, hyper_parameters):
     param_grad (list): gradient of parameter
 
   Returns:
-    params_loc (list): updated parameters
-    param_winc_loc (list): gradient buffer of previous step
+    params_ (list): updated parameters
+    param_winc_ (list): gradient buffer of previous step
     """
 
     params_loc = copy.deepcopy(param)
@@ -63,14 +63,11 @@ def update_param (param, param_grad, param_winc, hyper_parameters):
     decay = hyper_parameters['decay']
     mu = hyper_parameters['mu']
     for i in range(0, len(param)):
-        param_winc_loc[i][0] = mu*param_winc[i][0] + w_rate*param_grad[i][0] + decay*param[i][0]
-        param_winc_loc[i][1] = mu*param_winc[i][1] + b_rate*param_grad[i][1] + decay*param[i][1]
+         param_winc_loc[i][0] = mu*param_winc[i][0] + w_rate*param_grad[i][0] + decay*param[i][0]
+         param_winc_loc[i][1] = mu*param_winc[i][1] + b_rate*param_grad[i][1] + decay*param[i][1]
 
-        #param_winc_loc[i][0] = mu*param_winc[i][0] + w_rate*param_grad[i][0]
-        #param_winc_loc[i][1] = mu*param_winc[i][1] + b_rate*param_grad[i][1]
-
-        #params_loc[i][0] -= param_winc_loc[i][0]
-        #params_loc[i][1] -= param_winc_loc[i][1]
+         params_loc[i][0] -= param_winc_loc[i][0]
+         params_loc[i][1] -= param_winc_loc[i][1]
 
         #params_loc[i][0] -= w_rate * (param_grad[i][0] + decay * param[i][0])
         #params_loc[i][1] -= b_rate * (param_grad[i][1] + decay * param[i][1])
@@ -174,14 +171,14 @@ def grad_calc_2layer_batch_norm (param, x, y, eps):
 
     w3_grad, b3_grad, d5 = act_back(r2, a3, d6, w3, b3)
 
-    [gamma2_grad, beta2_grad, d4] = batch_norm_back(h2, r2, d5, gamma2, beta2, batch_data_para2, eps)    #batch_norm_back (input, output, grad_prev, batch_data_para):
+    [gamma2_grad, beta2_grad, d4] = batch_norm_back(h2, r2, d5, gamma2, beta2, batch_data_para2)    #batch_norm_back (input, output, grad_prev, batch_data_para):
 
     #Sigmoid 2
     d3 = sigmoid_back(a2, h2, d4)
 
     w2_grad, b2_grad, d1 = act_back(r1, a2, d3, w2, b2)    #784*100 = nx784' * nx100
 
-    [gamma1_grad, beta1_grad, d2] = batch_norm_back(h1, r1, d3,gamma1, beta1, batch_data_para1,eps)    #batch_norm_back (input, output, grad_prev, batch_data_para):
+    [gamma1_grad, beta1_grad, d2] = batch_norm_back(h1, r1, d3,gamma1, beta1, batch_data_para1)    #batch_norm_back (input, output, grad_prev, batch_data_para):
 
 
     d1 = sigmoid_back(a1, h1, d2)
@@ -189,6 +186,9 @@ def grad_calc_2layer_batch_norm (param, x, y, eps):
     w1_grad, b1_grad, d0 = act_back(x, a1, d1, w1, b1)    #784*100 = nx784' * nx100
 
     param_grad = [[w1_grad, b1_grad], [gamma1_grad, beta1_grad], [w2_grad,b2_grad], [gamma2_grad,beta2_grad], [w3_grad, b3_grad] ]
+    #param_grad = []
+    #print gamma1_grad, gamma2_grad, "beta1_grad", beta1_grad, beta2_grad
+    #print "beta1_grad", beta1_grad
 
     return param_grad
 

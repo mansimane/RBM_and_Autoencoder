@@ -189,23 +189,15 @@ def batch_norm_forward (x, gamma, beta, eps):
 
     y = (gamma * x_norm) + beta
 
-    batch_data_para = []
-    batch_data_para.append(x_norm)
-    batch_data_para.append(x_min_mu)
-    batch_data_para.append(sigma)
-    batch_data_para.append(var)
+    batch_data_para = (x_norm, x_min_mu, sigma, one_by_var,var, eps)
 
     return y, batch_data_para
 
-def batch_norm_back (input, output, grad_prev, gamma, beta, batch_data_para, eps):
-
-    x_norm = batch_data_para[0]
-    x_min_mu = batch_data_para[1]
-    sigma = batch_data_para[2]
-    var = batch_data_para[3]
-
+def batch_norm_back (input, output, grad_prev, gamma, beta, batch_data_para):
 
     no_of_samples = grad_prev.shape[0]
+
+    x_norm, x_min_mu, sigma, one_by_var, var, eps =  batch_data_para
 
     beta_grad = np.sum(grad_prev, axis=0)
 
@@ -215,7 +207,7 @@ def batch_norm_back (input, output, grad_prev, gamma, beta, batch_data_para, eps
 
     var_grad = np.sum(xnorm_grad * x_min_mu, axis=0)
 
-    x_grad = xnorm_grad / sigma #**
+    x_grad = xnorm_grad * one_by_var #**
 
     sqrt_var_grad = -(1.0 / (sigma ** 2)) * var_grad
 
@@ -229,9 +221,7 @@ def batch_norm_back (input, output, grad_prev, gamma, beta, batch_data_para, eps
 
     mu_grad = -1.0 * np.sum(x_min_mu_grad2 + x_grad, axis=0)
 
-    x_grad2 = np.ones((input.shape[0], input.shape[1])) * mu_grad
-
-    x_grad2 =  x_grad2 /no_of_samples
+    x_grad2 = (1.0 / no_of_samples) * np.ones((input.shape[0], input.shape[1])) * mu_grad
 
     grad_next = x_grad_1 + x_grad2
 
