@@ -1,16 +1,34 @@
-import numpy as np
-from PIL import Image
+'''
+Main file for autoencoder
+'''
 from load_mnist import *
-from functions_final import *
-from config import *
-import random
-import numpy as np
+from functions_ae import *
+from config_ae import *
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
-import time
+import random
 
-def visualize (w1, hyper_para, epoch, show_flag ) :
+def plot_ce_train_valid (train_ce, valid_ce, hyper_para):
     date = time.strftime("%Y-%m-%d_%H_%M")
+    plt.plot(train_ce)
+    plt.plot(valid_ce)
+    plt.title('AutoEncoder Error vs Epochs')
+    hh = 'hl_size_' + str(hyper_para['hidden_layer_1_size'])
+    a = '\tB_size=' + str(hyper_para['batch_size'])
+    b =  '\tlr=' + str(hyper_para['learning_rate'])
+    d = '\te: ' + str(hyper_para['epochs'])
+    e = '\tDrop_out: ' + str(int(100*hyper_para['drop_out']))
+    plt.suptitle(hh + a +b  + d + e)
+    plt.xlabel('Epochs')
+    plt.ylabel('Cross Entropy Error')
+    plt.legend(['Train Cross Entropy', 'Valid Cross Entropy'], loc='upper right')
+    if hyper_para['drop_out'] == 0.0:
+        plt.savefig('./figures/5g/ae/Q5_g_error' + hh + '_' + date + '.png')
+    else:
+        plt.savefig('./figures/5g/dae/Q5_g_error'+ hh + '_' + date + '.png')
+    plt.close()
+
+def visualize (w1, hyper_para, show_flag, epoch) :
+    date = time.strftime("%Y-%m-%d_%H_%M_%s")
 
     if w1.shape[0] == 784:
         if w1.shape[1] == 50:
@@ -25,8 +43,6 @@ def visualize (w1, hyper_para, epoch, show_flag ) :
         if w1.shape[1] == 500:
             nrow = 20
             ncol = 10
-
-        fig = plt.figure(figsize=(ncol + 1, nrow + 1))
 
         gs = gridspec.GridSpec(nrow, ncol,
                                wspace=0.0, hspace=0.0,
@@ -43,31 +59,18 @@ def visualize (w1, hyper_para, epoch, show_flag ) :
                 cnt = cnt + 1
         #plt.title('Weights at layer 1')
         hh = 'hl_size_' + str(hyper_para['hidden_layer_1_size'])
-        plt.suptitle( hh + '\tBatch_size=' + str(hyper_para['batch_size']) + '\tlearning_rate=' + str(
-            hyper_para['learning_rate']) + '\tk=' + str(hyper_para['k']) + 'epoch_' + str(epoch))
-        # if show_flag == 1:
-        #     plt.show()
-    plt.savefig('./figures/5g/rbm/Q5_g_weights' + hh+'_'+ date + '.png')
-    plt.close()
-
-
-def plot_ce_train_valid(train_ce, valid_ce, hyper_para):
-    date = time.strftime("%Y-%m-%d_%H_%M")
-    plt.plot(train_ce)
-    plt.plot(valid_ce)
-    plt.title('Error vs Epochs')
-    hh = 'hl_size_' + str(hyper_para['hidden_layer_1_size'])
-    a = '\tBatch_size=' + str(hyper_para['batch_size'])
-    b = '\tlearning_rate=' + str(hyper_para['learning_rate'])
-    c = '\tk=' + str(hyper_para['k'])
-    plt.suptitle(hh + a + b + c)
-    plt.xlabel('Epochs')
-    plt.ylabel('Cross Entropy Error')
-    plt.legend(['Train Cross Entropy', 'Valid Cross Entropy'], loc='upper right')
-    plt.savefig('./figures/5g/rbm/Q5_g_rbm_' + hh + '_'+ date + '.png')
-    #plt.show()
-    plt.close()
-
+        a = '\tB_size=' + str(hyper_para['batch_size'])
+        b = '\tlr=' + str(hyper_para['learning_rate'])
+        d = '\tepochs: ' + str(hyper_para['epochs'])
+        if show_flag == 0:
+            d = '\tepochs: ' + str(epoch)
+        e = '\tDrop_out: ' + str(int(100 * hyper_para['drop_out']))
+        plt.suptitle(hh + a + b  + d + e)
+        if hyper_para['drop_out'] == 0.0:
+            plt.savefig('./figures/5g/ae/Q5_g_weights' + hh + '_'+ date + '.png')
+        else:
+            plt.savefig('./figures/5g/dae/Q5_g_weights' + hh + '_' + date + '.png')
+        plt.close()
 
 # Load Training Data
 xtrain, ytrain, xvalidate, yvalidate, xtest, ytest = load_mnist()
@@ -79,20 +82,11 @@ random_seed = hyper_para['random_seed']
 mu = hyper_para['w_init_mu']
 sigma = hyper_para['w_init_sig']
 
-np.random.seed(random_seed)
-
-
-no_of_train_samples = len(ytrain)
-h = np.zeros((1, hyper_para['hidden_layer_1_size']))
-h.astype(float)
-
-# Variables Storing Results
-J_train = 0.0
-J_valid = 0.0
+J_train = 0
+J_valid = 0
 train_ce = []   #Cross Entropy = CE
 valid_ce = []
 
-# learning iterations
 indices = range(no_of_train_samples)
 random.shuffle(indices)
 batch_size = hyper_para['batch_size']
@@ -100,19 +94,11 @@ epochs = hyper_para['epochs']
 max_iter = no_of_train_samples / batch_size       #Iterations within epoch for training
 
 hlayer_size_grid = np.array([50,100,200,500])
-
 for hh in range(0,hlayer_size_grid.shape[0]):
 
     hyper_para['hidden_layer_1_size'] = hlayer_size_grid[hh]
     print 'Starting HL size  ' + str(hyper_para['hidden_layer_1_size'])
-
-    hidden_layer_1_size = hlayer_size_grid[hh]  # 100 hidden units
-    w = np.random.normal(mu, sigma, (input_layer_size * hidden_layer_1_size))
-    w = w.reshape(input_layer_size, hidden_layer_1_size)
-
-    b = np.random.normal(mu, sigma, (1, hidden_layer_1_size))
-    c = np.random.normal(mu, sigma, (1, input_layer_size))
-    param = {'w': w, 'b': b, 'c': c}
+    param = initialize_weights(hyper_para)
 
     for epoch in range(epochs):
         for step in range(max_iter):
@@ -124,9 +110,8 @@ for hh in range(0,hlayer_size_grid.shape[0]):
                 random.shuffle(indices)
                 continue
             idx = indices[start_idx: end_idx]
-
-            x_p, h_p = gibbs_step(param,  xtrain[idx, :], hyper_para)
-            param = update_param(param, x_p, xtrain[idx, :], hyper_para)
+            param_grad = grad_calc(param, xtrain[idx, :], hyper_para)
+            param = update_param(param, param_grad, hyper_para)
 
         J_train = loss_calc(param, xtrain, ytrain, hyper_para)
         J_valid = loss_calc(param, xvalidate, yvalidate, hyper_para)
@@ -137,5 +122,4 @@ for hh in range(0,hlayer_size_grid.shape[0]):
         valid_ce.append(J_valid)
 
     plot_ce_train_valid(train_ce, valid_ce, hyper_para)
-    visualize(param['w'], hyper_para, epoch, 1)
-
+    visualize(param['w1'], hyper_para, 1, 2)

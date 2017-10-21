@@ -14,8 +14,8 @@ def plot_ce_train_valid (train_ce, valid_ce, hyper_para):
     plt.ylabel('Cross Entropy Error')
     plt.legend(['Train Cross Entropy', 'Valid Cross Entropy'], loc='upper right')
     plt.show()
-    hh = hyper_para['']
-    plt.savefig('./figures/Q5_g_rbm' + date + '.png')
+    hh = str(hyper_para['hidden_layer_1_size'])
+    plt.savefig('./figures/Q5_a_rbm' + date + '.png')
 #    plt.close()
 
 
