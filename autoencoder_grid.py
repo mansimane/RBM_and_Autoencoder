@@ -84,8 +84,6 @@ sigma = hyper_para['w_init_sig']
 
 J_train = 0
 J_valid = 0
-train_ce = []   #Cross Entropy = CE
-valid_ce = []
 
 indices = range(no_of_train_samples)
 random.shuffle(indices)
@@ -95,6 +93,8 @@ max_iter = no_of_train_samples / batch_size       #Iterations within epoch for t
 
 hlayer_size_grid = np.array([50,100,200,500])
 for hh in range(0,hlayer_size_grid.shape[0]):
+    train_ce = []  # Cross Entropy = CE
+    valid_ce = []
 
     hyper_para['hidden_layer_1_size'] = hlayer_size_grid[hh]
     print 'Starting HL size  ' + str(hyper_para['hidden_layer_1_size'])

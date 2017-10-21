@@ -89,8 +89,6 @@ h.astype(float)
 # Variables Storing Results
 J_train = 0.0
 J_valid = 0.0
-train_ce = []   #Cross Entropy = CE
-valid_ce = []
 
 # learning iterations
 indices = range(no_of_train_samples)
@@ -105,6 +103,8 @@ for hh in range(0,hlayer_size_grid.shape[0]):
 
     hyper_para['hidden_layer_1_size'] = hlayer_size_grid[hh]
     print 'Starting HL size  ' + str(hyper_para['hidden_layer_1_size'])
+    train_ce = []  # Cross Entropy = CE
+    valid_ce = []
 
     hidden_layer_1_size = hlayer_size_grid[hh]  # 100 hidden units
     w = np.random.normal(mu, sigma, (input_layer_size * hidden_layer_1_size))
