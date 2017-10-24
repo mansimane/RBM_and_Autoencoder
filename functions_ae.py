@@ -194,7 +194,7 @@ def visualize (w1, hyper_para, show_flag, epoch) :
             for j in range(ncol):
                 im = np.reshape(w1[:, cnt], (28, 28))
                 ax = plt.subplot(gs[i, j])
-                ax.imshow(im)
+                ax.imshow(im,cmap='gray')
                 ax.set_xticklabels([])
                 ax.set_yticklabels([])
                 cnt = cnt + 1

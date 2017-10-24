@@ -3,7 +3,7 @@
 
 # Traning Parameters
 hyper_para = {}
-hyper_para['batch_size'] = 10
+hyper_para['batch_size'] = 1
 hyper_para['epochs'] = 120
 
 hyper_para['learning_rate'] = 0.01        #Learning rate for w
