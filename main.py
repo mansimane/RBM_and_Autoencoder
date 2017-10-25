@@ -70,8 +70,9 @@ for epoch in range(epochs):
     train_ce.append(J_train)
     valid_ce.append(J_valid)
 
+    param_string = 'param_rbm_k_' + str(hyper_para['k'])
     if (epoch > 49) & (epoch % 50 ==0):
-        save_obj(param, 'param', str(epoch))
+        save_obj(param, param_string , str(epoch))
         visualize(param['w'], hyper_para, epoch, 0)
 
     if ( epoch > 40):

@@ -8,9 +8,9 @@ import time
 mu = hyper_para['w_init_mu']
 sigma = hyper_para['w_init_sig']
 
-epoch = 50
-param = load_obj('param', str(epoch))
-
+epoch = 20150
+param = load_obj('param_rbm_k_', str(epoch))
+#param_rbm_k_20150.pkl
 
 # override number of steps in CD with 100
 hyper_para['k'] = 1000
@@ -45,6 +45,6 @@ for i in range(nrow):
 #plt.title('Digits generated with RBM')
 plt.suptitle('Para:' + '\tBatch_size=' + str(hyper_para['batch_size']) + '\tlearning_rate=' + str(
     hyper_para['learning_rate']) + '\tk=' + str(hyper_para['k']) + '_epoch' + str(epoch))
-plt.savefig('./figures/Q5_c_numbers' + date + '.png')
+plt.savefig('./figures/5c/Q5_c_numbers' + date + '.png')
 plt.show()
 
